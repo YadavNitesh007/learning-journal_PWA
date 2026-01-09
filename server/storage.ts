@@ -25,20 +25,23 @@ export class MemStorage implements IStorage {
   }
 
   private initializeDefaultData() {
-    const sampleReflections: InsertReflection[] = [
+    const sampleReflections: Reflection[] = [
       {
+        id: randomUUID(),
         name: "Student Developer",
         date: "Sat Jan 04 2025",
         reflection: "This week I learned about Progressive Web App technologies including service workers, caching strategies, and the manifest file. The most challenging part was understanding the lifecycle of a service worker and how to properly cache dynamic API responses. I solved this by implementing a network-first strategy for API calls with a fallback to cached data when offline.",
         week: 7,
       },
       {
+        id: randomUUID(),
         name: "Student Developer", 
         date: "Sat Dec 28 2024",
         reflection: "In Week 6, I focused on integrating Flask as a backend framework. I learned how to create API endpoints that serve JSON data and handle POST requests for new journal entries. The frontend-backend connection was challenging at first, but using fetch API with proper error handling made it manageable.",
         week: 6,
       },
       {
+        id: randomUUID(),
         name: "Student Developer",
         date: "Sat Dec 21 2024", 
         reflection: "Week 5 introduced me to Python for backend data management. I created scripts to read and write JSON files for storing reflections. Understanding the difference between file-based storage and browser storage was enlightening - file storage persists across all users and sessions.",
@@ -47,8 +50,7 @@ export class MemStorage implements IStorage {
     ];
 
     sampleReflections.forEach((r) => {
-      const id = randomUUID();
-      this.reflections.set(id, { ...r, id });
+      this.reflections.set(r.id, r);
     });
   }
 
@@ -68,9 +70,11 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const date = new Date().toDateString();
     const reflection: Reflection = { 
-      ...insertReflection, 
       id,
+      name: insertReflection.name,
       date,
+      reflection: insertReflection.reflection,
+      week: insertReflection.week ?? null,
     };
     this.reflections.set(id, reflection);
     return reflection;
@@ -90,7 +94,15 @@ export class MemStorage implements IStorage {
 
   async createProject(insertProject: InsertProject): Promise<Project> {
     const id = randomUUID();
-    const project: Project = { ...insertProject, id };
+    const project: Project = { 
+      id,
+      title: insertProject.title,
+      description: insertProject.description,
+      technologies: insertProject.technologies,
+      githubUrl: insertProject.githubUrl ?? null,
+      liveUrl: insertProject.liveUrl ?? null,
+      imageUrl: insertProject.imageUrl ?? null,
+    };
     this.projects.set(id, project);
     return project;
   }
