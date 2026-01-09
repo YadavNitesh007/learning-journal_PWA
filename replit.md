@@ -1,97 +1,65 @@
 # Learning Journal PWA
 
-A Progressive Web Application for documenting weekly learning reflections, projects, and professional growth throughout the FGCT6021 Mobile Application Development course.
-
 ## Overview
 
-This Learning Journal PWA combines knowledge from Labs 2-7:
-- **Lab 2**: Frontend fundamentals - HTML/CSS, mobile-first responsive design
-- **Lab 3**: JavaScript & DOM manipulation - reusable navigation, theme switching
-- **Lab 4**: Web APIs - Storage API (localStorage for theme), Browser APIs
-- **Lab 5**: Python & JSON - JSON-based data storage for reflections
-- **Lab 6**: Frontend & Backend integration - API routes, dynamic data fetching
-- **Lab 7**: PWA technologies - manifest, service worker, offline support, caching
+A Progressive Web Application for documenting weekly learning reflections, projects, and professional growth. The application serves as a personal learning journal with offline support, theme switching, and installability. Built with React frontend and Express backend, using in-memory storage with a PostgreSQL-ready schema.
 
-## Features
+## User Preferences
 
-- **4 Pages**: Home, Journal, Projects, About
-- **Journal Entries**: Submit and view weekly reflections with form validation
-- **Theme Toggle**: Light/dark mode with localStorage persistence
-- **Offline Support**: Service worker with caching strategies
-- **Installable**: PWA manifest for app installation on desktop/mobile
-- **Responsive Design**: Mobile-first approach with breakpoints for tablet/desktop
+Preferred communication style: Simple, everyday language.
 
-## Project Structure
+## System Architecture
 
-```
-client/
-├── public/
-│   ├── manifest.json      # PWA manifest
-│   ├── sw.js              # Service worker
-│   └── favicon.png
-├── src/
-│   ├── components/
-│   │   ├── navigation.tsx # Reusable navigation with theme toggle
-│   │   ├── footer.tsx     # Footer with install prompt
-│   │   └── ui/            # shadcn/ui components
-│   ├── lib/
-│   │   ├── theme-provider.tsx # Theme context with localStorage
-│   │   ├── queryClient.ts
-│   │   └── utils.ts
-│   ├── pages/
-│   │   ├── home.tsx       # Homepage with hero section
-│   │   ├── journal.tsx    # Journal entries form and list
-│   │   ├── projects.tsx   # Project showcase cards
-│   │   └── about.tsx      # About page with profile and timeline
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-└── index.html
-
-server/
-├── index.ts
-├── routes.ts              # API endpoints for reflections/projects
-├── storage.ts             # In-memory storage implementation
-├── static.ts
-└── vite.ts
-
-shared/
-└── schema.ts              # Data models (Reflection, Project)
-```
-
-## API Endpoints
-
-### Reflections
-- `GET /api/reflections` - Get all reflections (sorted by date, newest first)
-- `POST /api/reflections` - Create new reflection
-- `DELETE /api/reflections/:id` - Delete a reflection
-
-### Projects
-- `GET /api/projects` - Get all projects
-- `POST /api/projects` - Create new project
-- `DELETE /api/projects/:id` - Delete a project
-
-## Technologies
-
-- **Frontend**: React, TypeScript, TailwindCSS, shadcn/ui
-- **Backend**: Express.js, Node.js
-- **State Management**: TanStack Query (React Query)
-- **Routing**: Wouter
+### Frontend Architecture
+- **Framework**: React with TypeScript, using Vite as the build tool
+- **Routing**: Wouter for client-side routing (lightweight alternative to React Router)
+- **State Management**: TanStack React Query for server state and data fetching
+- **UI Components**: shadcn/ui component library built on Radix UI primitives
+- **Styling**: Tailwind CSS with custom design tokens, supporting light/dark themes via CSS variables
 - **Forms**: React Hook Form with Zod validation
-- **PWA**: Service Worker, Web App Manifest, Cache Storage API
 
-## Development
+### Backend Architecture
+- **Framework**: Express.js with TypeScript
+- **API Design**: RESTful endpoints under `/api/` prefix for reflections and projects
+- **Data Validation**: Zod schemas shared between client and server via drizzle-zod
+- **Storage**: Currently uses in-memory storage (MemStorage class) with interface designed for easy database migration
 
-The application runs on port 5000. The Express server serves both the API and the Vite-built frontend.
+### PWA Features
+- **Service Worker**: Caches static assets and API responses for offline functionality
+- **Manifest**: Enables app installation on mobile and desktop devices
+- **Offline Indicator**: Shows banner when network is unavailable
 
-```bash
-npm run dev
-```
+### Database Schema
+- **reflections**: Stores journal entries with id, name, date, reflection text, and week number
+- **projects**: Stores portfolio projects with title, description, technologies array, and URLs
+- Schema defined using Drizzle ORM with PostgreSQL dialect (ready for database connection)
 
-## PWA Features
+### Key Design Patterns
+- **Monorepo Structure**: Client code in `/client`, server in `/server`, shared types in `/shared`
+- **Path Aliases**: `@/` for client source, `@shared/` for shared code
+- **Theme System**: Context-based theme provider with localStorage persistence
+- **Component Architecture**: Reusable UI components in `/client/src/components/ui/`
 
-- **Manifest**: Configures app name, icons, theme colors, and display mode
-- **Service Worker**: Implements caching strategies for static assets and API responses
-- **Offline Support**: Falls back to cached data when offline
-- **Install Prompt**: Shows install button when PWA is installable
-- **Offline Indicator**: Banner appears when connection is lost
+## External Dependencies
+
+### Database
+- **Drizzle ORM**: Database toolkit with PostgreSQL dialect configured
+- **PostgreSQL**: Expected database (requires DATABASE_URL environment variable for production)
+- Currently running with in-memory storage for development
+
+### Frontend Libraries
+- **Radix UI**: Headless UI primitives for accessible components
+- **TanStack Query**: Data fetching and caching
+- **React Hook Form**: Form state management
+- **Tailwind CSS**: Utility-first CSS framework
+- **Lucide React / React Icons**: Icon libraries
+
+### Development Tools
+- **Vite**: Frontend build tool with HMR
+- **esbuild**: Server bundling for production
+- **TypeScript**: Type checking across the stack
+- **Drizzle Kit**: Database migration tooling
+
+### Fonts
+- **Inter**: Primary body font (Google Fonts)
+- **Space Grotesk**: Display/heading font (Google Fonts)

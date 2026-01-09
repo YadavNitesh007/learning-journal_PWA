@@ -34,7 +34,7 @@ export function Navigation() {
     <>
       {!isOnline && (
         <div 
-          className="fixed top-0 left-0 right-0 z-50 bg-amber-500 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2"
+          className="fixed top-0 left-0 right-0 z-50 bg-amber-500 dark:bg-amber-600 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2"
           data-testid="banner-offline"
         >
           <WifiOff className="w-4 h-4" />
@@ -42,14 +42,14 @@ export function Navigation() {
         </div>
       )}
       <nav 
-        className={`fixed left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md border-b border-border ${!isOnline ? 'top-10' : 'top-0'}`}
+        className={`fixed left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-lg border-b border-border/50 ${!isOnline ? 'top-10' : 'top-0'}`}
         role="navigation"
         aria-label="Main navigation"
       >
         <div className="max-w-6xl mx-auto px-4 md:px-8 h-full flex items-center justify-between gap-4">
           <Link href="/">
             <span 
-              className="font-serif font-bold text-xl tracking-tight cursor-pointer"
+              className="font-serif font-bold text-xl tracking-tight cursor-pointer hover:text-primary transition-colors"
               data-testid="link-logo"
             >
               Learning Journal
@@ -64,6 +64,7 @@ export function Navigation() {
                 <Link key={item.path} href={item.path}>
                   <Button
                     variant={isActive ? "secondary" : "ghost"}
+                    size="sm"
                     className="gap-2"
                     data-testid={`link-nav-${item.label.toLowerCase()}`}
                   >
@@ -75,15 +76,21 @@ export function Navigation() {
             })}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <div 
-              className="flex items-center gap-1 text-xs text-muted-foreground"
+              className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground px-2"
               data-testid="status-connection"
             >
               {isOnline ? (
-                <Wifi className="w-4 h-4 text-green-500" />
+                <>
+                  <Wifi className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="sr-only">Online</span>
+                </>
               ) : (
-                <WifiOff className="w-4 h-4 text-amber-500" />
+                <>
+                  <WifiOff className="w-3.5 h-3.5 text-amber-500" />
+                  <span className="sr-only">Offline</span>
+                </>
               )}
             </div>
             
@@ -95,9 +102,9 @@ export function Navigation() {
               data-testid="button-theme-toggle"
             >
               {theme === "light" ? (
-                <Moon className="w-5 h-5" />
+                <Moon className="w-[18px] h-[18px]" />
               ) : (
-                <Sun className="w-5 h-5" />
+                <Sun className="w-[18px] h-[18px]" />
               )}
             </Button>
 
@@ -119,8 +126,8 @@ export function Navigation() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border">
-            <div className="flex flex-col p-4 gap-2">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border">
+            <div className="flex flex-col p-3 gap-1">
               {navItems.map((item) => {
                 const isActive = location === item.path;
                 const Icon = item.icon;
@@ -128,7 +135,7 @@ export function Navigation() {
                   <Link key={item.path} href={item.path}>
                     <Button
                       variant={isActive ? "secondary" : "ghost"}
-                      className="w-full justify-start gap-2"
+                      className="w-full justify-start gap-3"
                       onClick={() => setMobileMenuOpen(false)}
                       data-testid={`link-mobile-nav-${item.label.toLowerCase()}`}
                     >
