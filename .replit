@@ -7,3 +7,14 @@ packages = ["nodejs"]
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Start application"
+mode = "sequential"
+author = 42442948
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
