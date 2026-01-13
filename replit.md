@@ -63,3 +63,32 @@ Preferred communication style: Simple, everyday language.
 ### Fonts
 - **Inter**: Primary body font (Google Fonts)
 - **Space Grotesk**: Display/heading font (Google Fonts)
+
+## Deployment to Render
+
+### Quick Deploy Steps
+1. Push your code to a GitHub repository
+2. Go to [Render Dashboard](https://dashboard.render.com)
+3. Click "New" → "Web Service"
+4. Connect your GitHub repository
+5. Configure the service:
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm run start`
+   - **Environment Variables**: Add `SESSION_SECRET` (generate a random string)
+6. Click "Create Web Service"
+
+### Alternative: Blueprint Deploy
+Use the `render.yaml` file for automatic configuration:
+1. Push code to GitHub
+2. In Render Dashboard, click "New" → "Blueprint"
+3. Connect your repository
+4. Render will auto-detect the render.yaml configuration
+
+### Environment Variables for Render
+- `NODE_ENV`: production (auto-set by Render)
+- `SESSION_SECRET`: Required for session management (generate a secure random string)
+- `PORT`: Auto-provided by Render
+
+### Build Output
+- Client: Built to `dist/public/` directory
+- Server: Bundled to `dist/index.cjs`
