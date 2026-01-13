@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Form,
   FormControl,
@@ -25,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, Send, RotateCcw, Calendar, User, Trash2, Search, FileText, TrendingUp } from "lucide-react";
+import { Loader2, Send, RotateCcw, Calendar, User, Trash2, Search, FileText, TrendingUp, PenLine, BookOpen } from "lucide-react";
 import type { Reflection } from "@shared/schema";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -41,7 +42,7 @@ function JournalEntrySkeleton() {
   return (
     <Card className="overflow-hidden">
       <div className="flex">
-        <div className="w-1 bg-muted shrink-0" />
+        <div className="w-1.5 bg-muted shrink-0" />
         <CardContent className="p-5 flex-1">
           <div className="flex items-start justify-between gap-4 mb-3">
             <div className="space-y-2 flex-1">
@@ -57,17 +58,21 @@ function JournalEntrySkeleton() {
   );
 }
 
-function StatsCard({ icon: Icon, label, value, testId }: { icon: typeof FileText; label: string; value: string | number; testId: string }) {
+function StatsCard({ icon: Icon, label, value, color, testId }: { icon: typeof FileText; label: string; value: string | number; color: string; testId: string }) {
   return (
-    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50" data-testid={testId}>
-      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-        <Icon className="w-5 h-5 text-primary" />
-      </div>
-      <div>
-        <p className="text-2xl font-bold leading-none mb-1" data-testid={`${testId}-value`}>{value}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
-      </div>
-    </div>
+    <Card className="overflow-hidden" data-testid={testId}>
+      <CardContent className="p-5">
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-xl ${color} flex items-center justify-center shrink-0`}>
+            <Icon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-3xl font-bold leading-none mb-1" data-testid={`${testId}-value`}>{value}</p>
+            <p className="text-sm text-muted-foreground">{label}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -79,7 +84,7 @@ export default function JournalPage() {
   const form = useForm<ReflectionFormValues>({
     resolver: zodResolver(reflectionFormSchema),
     defaultValues: {
-      name: "",
+      name: "Nitesh Kumar Yadav",
       reflection: "",
       week: undefined,
     },
@@ -96,7 +101,7 @@ export default function JournalPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reflections"] });
-      form.reset();
+      form.reset({ name: "Nitesh Kumar Yadav", reflection: "", week: undefined });
       toast({
         title: "Reflection submitted",
         description: "Your journal entry has been saved successfully.",
@@ -151,45 +156,69 @@ export default function JournalPage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8 md:py-12">
-      <div className="max-w-4xl mx-auto px-4 md:px-8">
-        <div className="mb-8">
+      <div className="max-w-5xl mx-auto px-4 md:px-8">
+        <div className="mb-10">
+          <Badge variant="outline" className="mb-4">
+            <BookOpen className="w-3.5 h-3.5 mr-2" />
+            Lab 3 & 4: DOM Manipulation & Web APIs
+          </Badge>
           <h1 
-            className="font-serif text-3xl md:text-4xl font-bold mb-2"
+            className="font-serif text-3xl md:text-4xl font-bold mb-3"
             data-testid="text-journal-title"
           >
             Weekly Journal
           </h1>
-          <p className="text-muted-foreground">
-            Document your learning journey and track your progress
+          <p className="text-lg text-muted-foreground max-w-2xl">
+            Document your learning journey, track progress, and reflect on your growth throughout the course.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" data-testid="container-stats">
-          <StatsCard icon={FileText} label="Total Entries" value={reflectionCount} testId="stat-total-entries" />
-          <StatsCard icon={Calendar} label="Weeks Covered" value={uniqueWeeks} testId="stat-weeks-covered" />
-          <StatsCard icon={TrendingUp} label="Avg. Words" value={avgWordsPerEntry} testId="stat-avg-words" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10" data-testid="container-stats">
+          <StatsCard 
+            icon={FileText} 
+            label="Total Entries" 
+            value={reflectionCount} 
+            color="bg-gradient-to-br from-primary to-violet-600"
+            testId="stat-total-entries" 
+          />
+          <StatsCard 
+            icon={Calendar} 
+            label="Weeks Covered" 
+            value={uniqueWeeks} 
+            color="bg-gradient-to-br from-blue-500 to-cyan-500"
+            testId="stat-weeks-covered" 
+          />
+          <StatsCard 
+            icon={TrendingUp} 
+            label="Avg. Words" 
+            value={avgWordsPerEntry} 
+            color="bg-gradient-to-br from-emerald-500 to-teal-500"
+            testId="stat-avg-words" 
+          />
         </div>
 
-        <Card className="mb-8" data-testid="card-reflection-form">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
+        <Card className="mb-10 shadow-lg shadow-primary/5 border-primary/10" data-testid="card-reflection-form">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <PenLine className="w-5 h-5 text-primary" />
+              </div>
               New Reflection
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Your Name</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="Your name" 
+                            placeholder="Enter your name" 
                             {...field} 
                             data-testid="input-name"
                           />
@@ -204,7 +233,7 @@ export default function JournalPage() {
                     name="week"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Week (Optional)</FormLabel>
+                        <FormLabel>Week Number</FormLabel>
                         <Select 
                           onValueChange={(value) => field.onChange(parseInt(value))}
                           value={field.value?.toString()}
@@ -233,29 +262,29 @@ export default function JournalPage() {
                   name="reflection"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Reflection</FormLabel>
+                      <FormLabel>Your Reflection</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="What did you learn this week? What challenges did you face? What would you do differently?"
-                          rows={5}
+                          placeholder="What did you learn this week? What challenges did you face? What would you do differently? How has this contributed to your professional growth?"
+                          rows={6}
                           className="resize-none"
                           {...field}
                           data-testid="textarea-reflection"
                         />
                       </FormControl>
                       <FormDescription>
-                        Minimum 50 characters (about 10 words)
+                        Write at least 50 characters (about 10 words) reflecting on your learning experience.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 pt-2">
                   <Button 
                     type="submit" 
                     disabled={createMutation.isPending}
-                    className="gap-2"
+                    className="gap-2 shadow-lg shadow-primary/25"
                     data-testid="button-submit-reflection"
                   >
                     {createMutation.isPending ? (
@@ -268,12 +297,12 @@ export default function JournalPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => form.reset()}
+                    onClick={() => form.reset({ name: "Nitesh Kumar Yadav", reflection: "", week: undefined })}
                     className="gap-2"
                     data-testid="button-reset-form"
                   >
                     <RotateCcw className="w-4 h-4" />
-                    Reset
+                    Reset Form
                   </Button>
                 </div>
               </form>
@@ -282,16 +311,13 @@ export default function JournalPage() {
         </Card>
 
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-            <h2 className="font-serif text-xl font-semibold">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
+            <h2 className="font-serif text-2xl font-semibold">
               Previous Reflections
             </h2>
-            <span 
-              className="text-sm text-muted-foreground"
-              data-testid="text-reflection-count"
-            >
+            <Badge variant="secondary" data-testid="text-reflection-count">
               {filteredReflections.length} of {reflectionCount} entries
-            </span>
+            </Badge>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -306,7 +332,7 @@ export default function JournalPage() {
               />
             </div>
             <Select value={filterWeek} onValueChange={setFilterWeek}>
-              <SelectTrigger className="w-full sm:w-[140px]" data-testid="select-filter-week">
+              <SelectTrigger className="w-full sm:w-[160px]" data-testid="select-filter-week">
                 <SelectValue placeholder="Filter by week" />
               </SelectTrigger>
               <SelectContent>
@@ -329,13 +355,16 @@ export default function JournalPage() {
               <JournalEntrySkeleton />
             </>
           ) : filteredReflections.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <FileText className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
-                <p className="text-muted-foreground" data-testid="text-no-reflections">
+            <Card className="border-dashed">
+              <CardContent className="p-12 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">No Reflections Yet</h3>
+                <p className="text-muted-foreground max-w-sm mx-auto" data-testid="text-no-reflections">
                   {searchQuery || filterWeek !== "all" 
-                    ? "No reflections match your search criteria."
-                    : "No reflections yet. Submit your first entry above!"}
+                    ? "No reflections match your search criteria. Try adjusting your filters."
+                    : "Start documenting your learning journey by submitting your first reflection above."}
                 </p>
               </CardContent>
             </Card>
@@ -343,16 +372,16 @@ export default function JournalPage() {
             filteredReflections.map((reflection) => (
               <Card 
                 key={reflection.id} 
-                className="overflow-hidden group"
+                className="overflow-hidden group hover-elevate"
                 data-testid={`card-reflection-${reflection.id}`}
               >
                 <div className="flex">
-                  <div className="w-1 bg-primary shrink-0" />
+                  <div className="w-1.5 bg-gradient-to-b from-primary to-violet-500 shrink-0" />
                   <CardContent className="p-5 flex-1">
-                    <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex items-start justify-between gap-4 mb-4">
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <User className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <User className="w-4 h-4 text-primary" />
                           <span className="font-semibold" data-testid={`text-name-${reflection.id}`}>
                             {reflection.name}
                           </span>
@@ -364,19 +393,20 @@ export default function JournalPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         {reflection.week && (
-                          <span 
-                            className="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium"
+                          <Badge 
+                            variant="secondary"
+                            className="rounded-full"
                             data-testid={`badge-week-${reflection.id}`}
                           >
                             Week {reflection.week}
-                          </span>
+                          </Badge>
                         )}
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => deleteMutation.mutate(reflection.id)}
                           disabled={deleteMutation.isPending}
-                          className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-destructive"
                           data-testid={`button-delete-${reflection.id}`}
                         >
                           <Trash2 className="w-4 h-4" />
