@@ -144,16 +144,16 @@ export default function AboutPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-2" data-testid="container-social-links">
                   <a
                     href="https://github.com"
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-testid="link-github-profile"
                   >
                     <Button 
                       variant="outline" 
                       size="icon"
-                      data-testid="button-github-profile"
                     >
                       <SiGithub className="w-4 h-4" />
                     </Button>
@@ -162,20 +162,22 @@ export default function AboutPage() {
                     href="https://linkedin.com"
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-testid="link-linkedin-profile"
                   >
                     <Button 
                       variant="outline" 
                       size="icon"
-                      data-testid="button-linkedin-profile"
                     >
                       <SiLinkedin className="w-4 h-4" />
                     </Button>
                   </a>
-                  <a href="mailto:student@uca.ac.uk">
+                  <a 
+                    href="mailto:student@uca.ac.uk"
+                    data-testid="link-email-contact"
+                  >
                     <Button 
                       variant="outline" 
                       size="icon"
-                      data-testid="button-email"
                     >
                       <Mail className="w-4 h-4" />
                     </Button>
