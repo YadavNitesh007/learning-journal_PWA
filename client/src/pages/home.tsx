@@ -55,12 +55,19 @@ export default function HomePage() {
               </div>
               
               <h1 
-                className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] tracking-tight"
+                className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-[1.1] tracking-tight"
                 data-testid="text-hero-title"
               >
                 Learning
                 <span className="block text-primary">Journal</span>
               </h1>
+
+              <p 
+                className="text-sm font-medium text-primary/80 mb-4"
+                data-testid="text-student-info"
+              >
+                By Nitesh Kumar Yadav • Student ID: 2313244
+              </p>
               
               <p 
                 className="text-lg md:text-xl text-muted-foreground max-w-xl mb-8 leading-relaxed"

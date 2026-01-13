@@ -49,10 +49,14 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-muted-foreground">
+            <span className="font-medium text-foreground" data-testid="text-footer-student">
+              Nitesh Kumar Yadav • 2313244
+            </span>
+            <span className="hidden sm:inline text-muted-foreground/40">|</span>
             <span className="flex items-center gap-1.5" data-testid="text-footer-tagline">
               Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> for FGCT6021
             </span>
-            <span className="hidden sm:inline">|</span>
+            <span className="hidden sm:inline text-muted-foreground/40">|</span>
             <span data-testid="text-footer-copyright">{currentYear} Learning Journal</span>
           </div>
 

@@ -80,9 +80,9 @@ export default function AboutPage() {
             <Card className="sticky top-24" data-testid="card-profile">
               <CardContent className="p-6">
                 <div className="text-center mb-6">
-                  <Avatar className="w-20 h-20 mx-auto mb-4 ring-4 ring-primary/10">
-                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/70 text-primary-foreground">
-                      ST
+                  <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-primary/20 shadow-lg">
+                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary via-primary/90 to-violet-600 text-primary-foreground">
+                      NK
                     </AvatarFallback>
                   </Avatar>
                   
@@ -90,8 +90,15 @@ export default function AboutPage() {
                     className="font-serif text-xl font-semibold mb-1"
                     data-testid="text-profile-name"
                   >
-                    Student Developer
+                    Nitesh Kumar Yadav
                   </h2>
+                  
+                  <p 
+                    className="text-primary font-medium text-sm mb-1"
+                    data-testid="text-student-number"
+                  >
+                    Student ID: 2313244
+                  </p>
                   
                   <p 
                     className="text-muted-foreground text-sm"
