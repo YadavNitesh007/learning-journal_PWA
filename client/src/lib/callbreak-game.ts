@@ -118,7 +118,7 @@ export function placeBid(state: GameState, playerId: number, bid: number): GameS
   };
 }
 
-export function getValidCards(player: Player, trick: Trick, trumpSuit: Suit): Card[] {
+export function getValidCards(player: Player, trick: Trick, _trumpSuit: Suit): Card[] {
   if (trick.cards.length === 0) {
     return player.hand;
   }
@@ -129,20 +129,6 @@ export function getValidCards(player: Player, trick: Trick, trumpSuit: Suit): Ca
   if (cardsOfLeadSuit.length > 0) {
     return cardsOfLeadSuit;
   }
-  
-  const highestTrumpInTrick = trick.cards
-    .filter(tc => tc.card.suit === trumpSuit)
-    .reduce((max, tc) => Math.max(max, tc.card.value), 0);
-  
-  if (highestTrumpInTrick > 0) {
-    const higherTrumps = player.hand.filter(
-      c => c.suit === trumpSuit && c.value > highestTrumpInTrick
-    );
-    if (higherTrumps.length > 0) return higherTrumps;
-  }
-  
-  const trumpCards = player.hand.filter(c => c.suit === trumpSuit);
-  if (trumpCards.length > 0) return trumpCards;
   
   return player.hand;
 }
@@ -175,10 +161,11 @@ export function playCard(state: GameState, playerId: number, card: Card): GameSt
     
     const tricksPlayedInRound = state.tricksPlayedInRound + 1;
     const isRoundEnd = tricksPlayedInRound === 13;
+    const finalPlayers = isRoundEnd ? calculateRoundScores(players) : players;
     
     newState = {
       ...newState,
-      players,
+      players: finalPlayers,
       currentTrick: { cards: newTrickCards, leadSuit, winnerId },
       tricksPlayedInRound,
       lastTrickWinner: winnerId,
@@ -271,19 +258,15 @@ function getCurrentWinningCard(trick: Trick, trumpSuit: Suit): Card {
 }
 
 export function nextRound(state: GameState): GameState {
-  const scoredPlayers = calculateRoundScores(state.players);
-  
   if (state.currentRound >= state.totalRounds) {
     return {
       ...state,
-      players: scoredPlayers,
       phase: 'gameEnd'
     };
   }
   
   const newState = startNewRound({
     ...state,
-    players: scoredPlayers,
     currentRound: state.currentRound + 1
   });
   

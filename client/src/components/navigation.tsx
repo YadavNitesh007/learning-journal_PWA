@@ -1,13 +1,14 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme-provider";
-import { Home, BookOpen, User, FolderOpen, Sun, Moon, Menu, X, Wifi, WifiOff } from "lucide-react";
+import { Home, BookOpen, User, FolderOpen, Sun, Moon, Menu, X, Wifi, WifiOff, Gamepad2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/journal", label: "Journal", icon: BookOpen },
   { path: "/projects", label: "Projects", icon: FolderOpen },
+  { path: "/game", label: "Game", icon: Gamepad2 },
   { path: "/about", label: "About", icon: User },
 ];
 

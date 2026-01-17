@@ -26,7 +26,6 @@ import { RotateCcw, Play, Trophy, Target, Spade } from 'lucide-react';
 export default function GamePage() {
   const [gameState, setGameState] = useState<GameState>(createInitialGameState());
   const [selectedBid, setSelectedBid] = useState(1);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [showTrickResult, setShowTrickResult] = useState(false);
 
   const humanPlayer = gameState.players[0];
@@ -40,48 +39,40 @@ export default function GamePage() {
   const handlePlaceBid = useCallback((bid: number) => {
     if (gameState.phase !== 'bidding' || gameState.currentPlayerIndex !== 0) return;
     
-    let newState = placeBid(gameState, 0, bid);
+    const newState = placeBid(gameState, 0, bid);
     setGameState(newState);
-    setIsProcessing(true);
   }, [gameState]);
 
   useEffect(() => {
-    if (gameState.phase === 'bidding' && gameState.currentPlayerIndex !== 0 && isProcessing) {
+    if (gameState.phase === 'bidding' && gameState.currentPlayerIndex !== 0) {
       const timer = setTimeout(() => {
         const currentBot = gameState.players[gameState.currentPlayerIndex];
         const botBid = getAIBid(currentBot);
         const newState = placeBid(gameState, currentBot.id, botBid);
         setGameState(newState);
-        
-        if (newState.phase === 'playing') {
-          setIsProcessing(false);
-        }
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [gameState, isProcessing]);
+  }, [gameState.phase, gameState.currentPlayerIndex, gameState.players]);
 
   const handlePlayCard = useCallback((card: PlayingCardType) => {
-    if (gameState.phase !== 'playing' || gameState.currentPlayerIndex !== 0 || isProcessing) return;
+    if (gameState.phase !== 'playing' || gameState.currentPlayerIndex !== 0 || showTrickResult) return;
     
     const validCards = getValidCards(humanPlayer, gameState.currentTrick, gameState.trumpSuit);
     const isValid = validCards.some(c => c.suit === card.suit && c.rank === card.rank);
     
     if (!isValid) return;
     
-    let newState = playCard(gameState, 0, card);
+    const newState = playCard(gameState, 0, card);
     setGameState(newState);
     
-    if (newState.currentTrick.cards.length < 4) {
-      setIsProcessing(true);
-    } else if (newState.currentTrick.winnerId !== null) {
+    if (newState.currentTrick.cards.length === 4) {
       setShowTrickResult(true);
     }
-  }, [gameState, humanPlayer, isProcessing]);
+  }, [gameState, humanPlayer, showTrickResult]);
 
   useEffect(() => {
-    if (gameState.phase === 'playing' && gameState.currentPlayerIndex !== 0 && 
-        gameState.currentTrick.cards.length < 4 && !showTrickResult) {
+    if (gameState.phase === 'playing' && gameState.currentPlayerIndex !== 0 && !showTrickResult) {
       const timer = setTimeout(() => {
         const currentBot = gameState.players[gameState.currentPlayerIndex];
         const cardToPlay = getAICardToPlay(currentBot, gameState.currentTrick, gameState.trumpSuit);
@@ -90,12 +81,11 @@ export default function GamePage() {
         
         if (newState.currentTrick.cards.length === 4) {
           setShowTrickResult(true);
-          setIsProcessing(false);
         }
       }, 600);
       return () => clearTimeout(timer);
     }
-  }, [gameState, showTrickResult]);
+  }, [gameState.phase, gameState.currentPlayerIndex, gameState.currentTrick, gameState.players, gameState.trumpSuit, showTrickResult]);
 
   useEffect(() => {
     if (showTrickResult && gameState.currentTrick.winnerId !== null) {
@@ -110,32 +100,10 @@ export default function GamePage() {
           ...prev,
           currentTrick: { cards: [], leadSuit: null, winnerId: null }
         }));
-        
-        if (gameState.lastTrickWinner !== 0) {
-          setIsProcessing(true);
-        }
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [showTrickResult, gameState.currentTrick.winnerId, gameState.phase, gameState.lastTrickWinner]);
-
-  useEffect(() => {
-    if (gameState.phase === 'playing' && gameState.currentPlayerIndex !== 0 && 
-        gameState.currentTrick.cards.length === 0 && !showTrickResult && isProcessing) {
-      const timer = setTimeout(() => {
-        const currentBot = gameState.players[gameState.currentPlayerIndex];
-        const cardToPlay = getAICardToPlay(currentBot, gameState.currentTrick, gameState.trumpSuit);
-        const newState = playCard(gameState, currentBot.id, cardToPlay);
-        setGameState(newState);
-        
-        if (newState.currentTrick.cards.length === 4) {
-          setShowTrickResult(true);
-          setIsProcessing(false);
-        }
-      }, 600);
-      return () => clearTimeout(timer);
-    }
-  }, [gameState, showTrickResult, isProcessing]);
+  }, [showTrickResult, gameState.currentTrick.winnerId, gameState.phase]);
 
   const handleNextRound = useCallback(() => {
     const newState = nextRound(gameState);
@@ -146,7 +114,6 @@ export default function GamePage() {
   const handleNewGame = useCallback(() => {
     setGameState(resetGame());
     setShowTrickResult(false);
-    setIsProcessing(false);
   }, []);
 
   const validCards = gameState.phase === 'playing' && gameState.currentPlayerIndex === 0
@@ -218,12 +185,13 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-900/90 to-green-800/90 dark:from-green-950 dark:to-green-900 p-4">
+    <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-b from-green-800 to-green-700 dark:from-green-900 dark:to-green-800 rounded-xl mx-4 my-4 md:mx-8 p-4 shadow-xl">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Spade className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             <h1 className="text-xl sm:text-2xl font-bold text-white">Call Break</h1>
+            <Badge variant="secondary" className="text-xs">Mini Project</Badge>
           </div>
           
           <div className="flex items-center gap-2 sm:gap-4">
@@ -372,7 +340,7 @@ export default function GamePage() {
                     key={`${card.suit}-${card.rank}`}
                     card={card}
                     onClick={() => handlePlayCard(card)}
-                    disabled={gameState.currentPlayerIndex !== 0 || !isValid || isProcessing || showTrickResult}
+                    disabled={gameState.currentPlayerIndex !== 0 || !isValid || showTrickResult}
                     className={cn(
                       "flex-shrink-0",
                       !isValid && gameState.currentPlayerIndex === 0 && "opacity-40"
@@ -415,7 +383,7 @@ export default function GamePage() {
                     </div>
                     <div className="text-right">
                       <Badge variant={madeIt ? "default" : "destructive"}>
-                        {madeIt ? '+' : ''}{madeIt ? player.bid + (player.tricksWon - player.bid) * 0.1 : -player.bid}
+                        {madeIt ? '+' : ''}{madeIt ? Math.round((player.bid + (player.tricksWon - player.bid) * 0.1) * 10) / 10 : -player.bid}
                       </Badge>
                       <p className="text-sm font-medium mt-1">Total: {player.score}</p>
                     </div>
@@ -477,10 +445,6 @@ export default function GamePage() {
           </Card>
         )}
 
-        <div className="mt-8 text-center text-white/60 text-sm">
-          <p>Mini Project - Call Break Card Game</p>
-          <p>Nitesh Kumar Yadav | Student ID: 2313244</p>
-        </div>
       </div>
     </div>
   );
