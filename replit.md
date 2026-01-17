@@ -2,103 +2,63 @@
 
 ## Overview
 
-A comprehensive Learning Journal Progressive Web App for the FGCT6021 Mobile App Development course, now featuring a Call Break card game as a mini project. The app demonstrates all course lab requirements (Labs 2-7) with professional UI/UX design.
+A Progressive Web Application (PWA) serving as a personal learning journal for a Mobile Application Development course. The app tracks weekly learning reflections, showcases projects, and includes a Call Break card game as a mini-project. Built with React, TypeScript, and Express.js, it demonstrates PWA capabilities including offline support, installability, and responsive design.
 
-**Student:** Nitesh Kumar Yadav  
-**Student ID:** 2313244
+## User Preferences
 
-## Application Features
-
-### Learning Journal (Main App)
-- **Home Page:** Labs compliance showcase, feature cards, quick links
-- **Journal Page:** Weekly reflections with search, filter, and stats dashboard
-- **Projects Page:** Technical project showcase with gradient cards
-- **About Page:** Student profile, timeline, and course information
-
-### Call Break Card Game (Mini Project)
-- **Location:** `/game` route
-- **Type:** Single-player vs 3 AI opponents
-- **Features:** Full trick-taking gameplay, bidding system, 5-round scoring
-
-## Call Break Game Rules
-
-1. **Players:** 4 players (1 human + 3 AI bots)
-2. **Cards:** Standard 52-card deck, each player gets 13 cards
-3. **Trump:** Spades are always trump
-4. **Bidding:** Each player bids 1-8 tricks they expect to win
-5. **Playing:** 
-   - Must follow suit if possible
-   - If can't follow suit, can play any card (including trump)
-   - Highest card of led suit wins, unless trumped
-6. **Scoring:**
-   - Meet or exceed bid: +bid points + 0.1 per overtrick
-   - Fail to meet bid: -bid points
-7. **Game:** 5 rounds total, highest score wins
+Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
 ### Frontend Architecture
-- **Framework**: React with TypeScript, using Vite as build tool
-- **Routing**: Wouter for client-side routing
-- **State Management**: React Query for server state, useState for local state
-- **UI Components**: shadcn/ui component library built on Radix UI
-- **Styling**: Tailwind CSS with custom warm violet theme
+- **Framework**: React with TypeScript using Vite as the build tool
+- **Routing**: Wouter for lightweight client-side routing with pages for Home, Journal, Projects, About, and Game
+- **State Management**: TanStack Query for server state and data fetching
+- **Styling**: TailwindCSS with shadcn/ui component library (New York style variant)
+- **Theme System**: Custom ThemeProvider supporting light/dark mode with localStorage persistence
 
-### Key Files
-- **Game Types**: `/client/src/lib/callbreak-types.ts`
-- **Game Logic**: `/client/src/lib/callbreak-game.ts`
-- **Card Component**: `/client/src/components/playing-card.tsx`
-- **Game Page**: `/client/src/pages/game.tsx`
+### Backend Architecture
+- **Server**: Express.js with TypeScript running on Node.js
+- **API Pattern**: RESTful endpoints under `/api/` prefix for reflections and projects CRUD operations
+- **Storage**: Currently uses in-memory storage (`MemStorage` class) with interface designed for easy database migration
+- **Development**: Vite dev server with HMR integrated via middleware
 
-### PWA Features
-- Service Worker for offline caching
-- Web App Manifest for installation
-- Responsive design for all devices
-- Online/offline status indicator
+### PWA Implementation
+- **Service Worker**: Custom service worker (`sw.js`) with cache-first strategy for static assets and network-first for API calls
+- **Manifest**: Web app manifest for installability with proper icons and theme colors
+- **Offline Support**: Cached API responses serve as fallback when offline
 
-## Development
+### Database Schema (Drizzle ORM)
+- **reflections**: Stores journal entries with id, name, date, reflection text, and week number
+- **projects**: Stores project showcases with title, description, technologies array, and URLs
+- Schema defined in `shared/schema.ts` using Drizzle with PostgreSQL dialect configured
 
-### Running the Project
-```bash
-npm run dev
-```
+### Build System
+- **Development**: `tsx` runs TypeScript directly for the server, Vite handles client HMR
+- **Production**: Custom build script bundles server with esbuild (selective dependency bundling) and client with Vite
 
-### Build for Production
-```bash
-npm run build
-npm run start
-```
+## External Dependencies
 
-## Project Structure
+### Database
+- **Drizzle ORM**: SQL toolkit configured for PostgreSQL
+- **PostgreSQL**: Database connection via `DATABASE_URL` environment variable (required for production)
+- **connect-pg-simple**: Session storage for PostgreSQL (available but not currently active)
 
-```
-client/
-├── src/
-│   ├── components/
-│   │   ├── navigation.tsx      # Main navigation with Game link
-│   │   ├── footer.tsx          # Footer with student info
-│   │   ├── playing-card.tsx    # Card game component
-│   │   └── ui/                 # shadcn components
-│   ├── lib/
-│   │   ├── callbreak-types.ts  # Game type definitions
-│   │   ├── callbreak-game.ts   # Game logic engine
-│   │   └── theme-provider.tsx  # Theme support
-│   ├── pages/
-│   │   ├── home.tsx            # Home with labs showcase
-│   │   ├── journal.tsx         # Journal entries
-│   │   ├── projects.tsx        # Project portfolio
-│   │   ├── about.tsx           # About page
-│   │   └── game.tsx            # Call Break card game
-│   └── App.tsx                 # App entry with routing
-server/
-└── index.ts                    # Express server
-```
+### UI Component Libraries
+- **Radix UI**: Comprehensive set of accessible, unstyled primitives
+- **shadcn/ui**: Pre-styled components built on Radix UI
+- **Lucide React**: Icon library
+- **react-icons**: Additional icon sets (GitHub, LinkedIn)
 
-## Labs Compliance
+### Form & Validation
+- **React Hook Form**: Form state management
+- **Zod**: Schema validation with drizzle-zod integration
+- **@hookform/resolvers**: Zod resolver for React Hook Form
 
-- **Lab 2:** HTML5, CSS3, responsive mobile-first design
-- **Lab 3:** JavaScript interactivity, DOM manipulation
-- **Lab 4:** Web APIs, LocalStorage, Fetch API
-- **Lab 5:** JSON data handling, CRUD operations
-- **Lab 6:** Express.js backend, RESTful API
-- **Lab 7:** PWA features, Service Worker, offline support
+### External APIs
+- **@octokit/rest**: GitHub API client (available for GitHub integration features)
+
+### Build & Development Tools
+- **Vite**: Frontend build tool with React plugin
+- **esbuild**: Server bundling
+- **TailwindCSS**: Utility-first CSS with PostCSS/Autoprefixer
