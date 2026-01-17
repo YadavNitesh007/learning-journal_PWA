@@ -1,94 +1,94 @@
-# Learning Journal PWA
+# Call Break Card Game
 
 ## Overview
 
-A Progressive Web Application for documenting weekly learning reflections, projects, and professional growth. The application serves as a personal learning journal with offline support, theme switching, and installability. Built with React frontend and Express backend, using in-memory storage with a PostgreSQL-ready schema.
+A single-player Call Break card game where you play against 3 AI opponents. Call Break is a popular trick-taking card game similar to Spades, where Spades are always trump.
 
-## User Preferences
+**Student:** Nitesh Kumar Yadav  
+**Student ID:** 2313244  
+**Project Type:** Mini Project
 
-Preferred communication style: Simple, everyday language.
+## Game Rules
+
+1. **Players:** 4 players (1 human + 3 AI bots)
+2. **Cards:** Standard 52-card deck, each player gets 13 cards
+3. **Trump:** Spades are always trump
+4. **Bidding:** Each player bids 1-8 tricks they expect to win
+5. **Playing:** 
+   - Must follow suit if possible
+   - If can't follow suit, can play any card (including trump)
+   - Highest card of led suit wins, unless trumped
+6. **Scoring:**
+   - Meet or exceed bid: +bid points + 0.1 per overtrick
+   - Fail to meet bid: -bid points
+7. **Game:** 5 rounds total, highest score wins
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React with TypeScript, using Vite as the build tool
-- **Routing**: Wouter for client-side routing (lightweight alternative to React Router)
-- **State Management**: TanStack React Query for server state and data fetching
-- **UI Components**: shadcn/ui component library built on Radix UI primitives
-- **Styling**: Tailwind CSS with custom design tokens, supporting light/dark themes via CSS variables
-- **Forms**: React Hook Form with Zod validation
+- **Routing**: Wouter for client-side routing
+- **State Management**: React useState/useEffect for game state
+- **UI Components**: shadcn/ui component library built on Radix UI
+- **Styling**: Tailwind CSS with custom card game theme
 
-### Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **API Design**: RESTful endpoints under `/api/` prefix for reflections and projects
-- **Data Validation**: Zod schemas shared between client and server via drizzle-zod
-- **Storage**: Currently uses in-memory storage (MemStorage class) with interface designed for easy database migration
+### Game Logic
+- **Types**: `/client/src/lib/callbreak-types.ts` - Card, Player, GameState types
+- **Game Engine**: `/client/src/lib/callbreak-game.ts` - All game logic
+  - Deck creation and shuffling
+  - Card dealing
+  - Bidding system
+  - Trick resolution
+  - AI opponent logic
+  - Scoring calculations
 
-### PWA Features
-- **Service Worker**: Caches static assets and API responses for offline functionality
-- **Manifest**: Enables app installation on mobile and desktop devices
-- **Offline Indicator**: Shows banner when network is unavailable
+### Key Components
+- **PlayingCard**: `/client/src/components/playing-card.tsx` - Card visual component
+- **GamePage**: `/client/src/pages/game.tsx` - Main game interface
 
-### Database Schema
-- **reflections**: Stores journal entries with id, name, date, reflection text, and week number
-- **projects**: Stores portfolio projects with title, description, technologies array, and URLs
-- Schema defined using Drizzle ORM with PostgreSQL dialect (ready for database connection)
+### AI Strategy
+- Bids based on high cards and trump cards in hand
+- Plays winning cards when possible
+- Throws lowest cards when can't win
 
-### Key Design Patterns
-- **Monorepo Structure**: Client code in `/client`, server in `/server`, shared types in `/shared`
-- **Path Aliases**: `@/` for client source, `@shared/` for shared code
-- **Theme System**: Context-based theme provider with localStorage persistence
-- **Component Architecture**: Reusable UI components in `/client/src/components/ui/`
+## Development
 
-## External Dependencies
+### Running the Project
+```bash
+npm run dev
+```
 
-### Database
-- **Drizzle ORM**: Database toolkit with PostgreSQL dialect configured
-- **PostgreSQL**: Expected database (requires DATABASE_URL environment variable for production)
-- Currently running with in-memory storage for development
+### Build for Production
+```bash
+npm run build
+npm run start
+```
 
-### Frontend Libraries
-- **Radix UI**: Headless UI primitives for accessible components
-- **TanStack Query**: Data fetching and caching
-- **React Hook Form**: Form state management
-- **Tailwind CSS**: Utility-first CSS framework
-- **Lucide React / React Icons**: Icon libraries
+## Project Structure
 
-### Development Tools
-- **Vite**: Frontend build tool with HMR
-- **esbuild**: Server bundling for production
-- **TypeScript**: Type checking across the stack
-- **Drizzle Kit**: Database migration tooling
+```
+client/
+├── src/
+│   ├── components/
+│   │   ├── playing-card.tsx    # Card component
+│   │   └── ui/                 # shadcn components
+│   ├── lib/
+│   │   ├── callbreak-types.ts  # Type definitions
+│   │   ├── callbreak-game.ts   # Game logic
+│   │   └── theme-provider.tsx  # Theme support
+│   ├── pages/
+│   │   └── game.tsx            # Main game page
+│   └── App.tsx                 # App entry
+server/
+└── index.ts                    # Express server
+```
 
-### Fonts
-- **Inter**: Primary body font (Google Fonts)
-- **Space Grotesk**: Display/heading font (Google Fonts)
+## Features
 
-## Deployment to Render
-
-### Quick Deploy Steps
-1. Push your code to a GitHub repository
-2. Go to [Render Dashboard](https://dashboard.render.com)
-3. Click "New" → "Web Service"
-4. Connect your GitHub repository
-5. Configure the service:
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm run start`
-   - **Environment Variables**: Add `SESSION_SECRET` (generate a random string)
-6. Click "Create Web Service"
-
-### Alternative: Blueprint Deploy
-Use the `render.yaml` file for automatic configuration:
-1. Push code to GitHub
-2. In Render Dashboard, click "New" → "Blueprint"
-3. Connect your repository
-4. Render will auto-detect the render.yaml configuration
-
-### Environment Variables for Render
-- `NODE_ENV`: production (auto-set by Render)
-- `SESSION_SECRET`: Required for session management (generate a secure random string)
-- `PORT`: Auto-provided by Render
-
-### Build Output
-- Client: Built to `dist/public/` directory
-- Server: Bundled to `dist/index.cjs`
+- Full Call Break gameplay
+- 3 AI opponents with basic strategy
+- 5-round game with scoring
+- Responsive design for mobile and desktop
+- Light/dark theme support
+- Visual card animations
+- Real-time game state updates
